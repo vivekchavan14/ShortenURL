@@ -12,19 +12,43 @@ async function generateShortUrl(req, res) {
         visitHistory: [],
     });
 
-    return res.json({ id: shortID });
+    return res.redirect('/');
 }
 
-async function handleGetAnalystics(req, res) {
+async function redirectToOriginalURL(req, res) {
     const shortId = req.params.shortId;
-    const result = await URL.findOne({ shortId });
-    return res.json({
-        totalClicks: result.visitHistory.length,
-        analytics: result.visitHistory,
-    });
+    const entry = await URL.findOneAndUpdate(
+        {
+            shortId,
+        },
+        {
+            $push: {
+                visitHistory: {
+                    timestamp: Date.now(),
+                },
+            },
+        }
+    );
+    if (entry) {
+        res.redirect(entry.redirectedURL);
+    } else {
+        res.status(404).send('URL not found');
+    }
+}
+
+async function getAnalytics(req, res) {
+    const shortId = req.params.shortId;
+    const entry = await URL.findOne({ shortId });
+
+    if (entry) {
+        res.render('analytics', { entry });
+    } else {
+        res.status(404).send('URL not found');
+    }
 }
 
 module.exports = {
     generateShortUrl,
-    handleGetAnalystics,
+    redirectToOriginalURL,
+    getAnalytics,
 };
