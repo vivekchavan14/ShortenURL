@@ -10,9 +10,9 @@ URL Shortener is a web application that allows you to create shortened URLs for 
 
 
 ## API Endpoints
-POST /url: Generate a short URL for a given long URL.
-GET /:shortId: Redirect to the original URL associated with the short ID.
-GET /url/:shortId/analytics: View click statistics and visit history for a short URL.
+- POST /url: Generate a short URL for a given long URL.
+- GET /:shortId: Redirect to the original URL associated with the short ID.
+- GET /url/:shortId/analytics: View click statistics and visit history for a short URL.
 
 
 ## Technologies Used
