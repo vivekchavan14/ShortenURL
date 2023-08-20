@@ -1,24 +1,47 @@
-const express = require('express');
-const { connectMongoDB } = require('./connect'); // Correct import statement
-const urlRoutes = require('./routes/urlRoutes');
-const app = express();
-const port = 5008;
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const { connectToMongoDB } = require("./connect");
+const { restrictToLoggedinUserOnly, checkAuth } = require("./middlewares/auth");
+const URL = require("./models/url");
 
-connectMongoDB('mongodb://127.0.0.1:27017/shortURL')
-    .then(() => {
-        console.log("MongoDB connected");
-        app.listen(port, () => {
-            console.log(`Server is running on http://localhost:${port}`);
-        });
-    })
-    .catch(error => {
-        console.error("Error connecting to MongoDB:", error);
-    });
+const urlRoute = require("./routes/url");
+const staticRoute = require("./routes/staticRouter");
+const userRoute = require("./routes/user");
+
+const app = express();
+const PORT = 8001;
+
+connectToMongoDB(process.env.MONGODB ?? "mongodb://localhost:27017/short-url").then(() =>
+  console.log("Mongodb connection established")
+);
+
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
-app.set('view engine', 'ejs');
+app.use("/url", restrictToLoggedinUserOnly, urlRoute);
+app.use("/user", userRoute);
+app.use("/", checkAuth, staticRoute);
 
-app.use('/url', urlRoutes);
+app.get("/url/:shortId", async (req, res) => {
+  const shortId = req.params.shortId;
+  const entry = await URL.findOneAndUpdate(
+    {
+      shortId,
+    },
+    {
+      $push: {
+        visitHistory: {
+          timestamp: Date.now(),
+        },
+      },
+    }
+  );
+  res.redirect(entry.redirectURL);
+});
+
+app.listen(PORT, () => console.log(`Server Started at http://localhost:${PORT}`));

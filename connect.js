@@ -1,13 +1,9 @@
-const mongoose = require('mongoose');
-
-async function connectMongoDB(url) {
-    return mongoose.connect(url, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      
-    });
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", true);
+async function connectToMongoDB(url) {
+  return mongoose.connect(url);
 }
 
 module.exports = {
-    connectMongoDB,
+  connectToMongoDB,
 };

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>URL Shortener</title>
+  <title>Login</title>
   <style>
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -13,7 +13,6 @@
       margin: 0;
       padding: 0;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -24,7 +23,7 @@
       border-radius: 10px;
       padding: 20px;
       width: 100%;
-      max-width: 800px;
+      max-width: 400px;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
       display: flex;
       flex-direction: column;
@@ -40,11 +39,12 @@
       margin-top: 10px;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    input[type="password"] {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
-      margin-bottom: 10px;
+      margin-bottom: 10px; 
       border: none;
       border-radius: 5px;
       background-color: #555;
@@ -52,12 +52,15 @@
       transition: background-color 0.3s;
     }
 
-    input[type="text"]:focus {
+    input[type="text"]:focus,
+    input[type="password"]:focus {
       background-color: #444;
     }
 
     button[type="submit"] {
+      width: 100%;
       padding: 10px;
+      margin-top: 20px;
       border: none;
       border-radius: 5px;
       background-color: #007bff;
@@ -69,62 +72,18 @@
     button[type="submit"]:hover {
       background-color: #0056b3;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #555;
-    }
-
-    th {
-      background-color: #007bff;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>URL Shortener</h1>
-    <% if (locals.id) { %>
-    <p>URL Generated: http://localhost:8001/url/<%= id %></p>
-    <% } %>
-
-    <div>
-      <form method="POST" action="/url">
-        <label for="url">Enter Your Original URL</label>
-        <input type="text" name="url" id="url" placeholder="https://example.com" />
-        <button type="submit">Generate</button>
-      </form>
-    </div>
-    <div style="margin-top: 30px">
-      <% if (locals.urls) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S. No</th>
-            <th>ShortID</th>
-            <th>Redirect</th>
-            <th>Clicks</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% urls.forEach((url, index) => { %>
-          <tr>
-            <td><%= index + 1 %></td>
-            <td><%= url.shortId %></td>
-            <td><%= url.redirectURL %></td>
-            <td><%= url.visitHistory.length %></td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-      <% } %>
-    </div>
+    <h1>Login</h1>
+    <form action="/user/login" method="post">
+      <label for="email">Email</label>
+      <input type="text" required name="email" />
+      <label for="password">Password</label>
+      <input type="password" required name="password" />
+      <button type="submit">Login</button>
+    </form>
   </div>
 </body>
 </html>
