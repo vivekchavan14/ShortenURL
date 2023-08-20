@@ -7,6 +7,7 @@ URL Shortener is a web application that allows you to create shortened URLs for 
 - Track the number of clicks and visit history for each shortened URL.
 - Analytics dashboard to view click statistics.
 - Redirect users to original URLs when accessing short links.
+- User authentication for secure URL management.
 
 
 ## API Endpoints
